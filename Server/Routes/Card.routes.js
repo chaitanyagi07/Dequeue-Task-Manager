@@ -9,6 +9,7 @@ router.get('/:id', cardController.getCardById);
 router.get('/',cardController.getall);
 router.delete('/delete',cardController.deleteall);
 router.post('/:id/subtask/create',cardController.createSubtask);
+router.delete('/:id',cardController.deleteCardbyId);
 // router.post('/task/:taskId/subtask/create',cardController.createSubtask)
 
 
