@@ -1,69 +1,81 @@
-const CardService = require('../Service/Card.Service');
-const cardService = require('../Service/Card.Service');
+const Card = require('../Module/Card.module');
 
 class CardController {
     async createCard(req, res) {
         try {
-            const newCard = await cardService.createCard(req.body);
-            res.status(201).json(newCard);
+            const newCard = new Card(req.body);
+            await newCard.save();
+            return newCard;
         } catch (error) {
-            res.status(500).json({ error: 'Internal server error' });
+            throw error;
         }
     }
 
     async getCardById(req, res) {
         try {
-            const card = await cardService.getCardById(req.params.id);
-             console.log(req.params.id);
+            const card = await Card.findById(req.params.id);
+            //  console.log(req.params.id);
             if (!card) {
                 return res.status(404).json({ error: 'Card not found' });
             }
-            res.status(200).json(card);
+            return card;
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
  async getall(req,res){
-     try{
-          const cards=await cardService.getallcards();
-          if(!cards){
-            return res.status(404).json({ error: 'Card not found' });
-          }
-          res.status(200).json(cards);
-     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+    try {
+        const result=Card.find();
+        return result;
+    } catch (error) {
+        throw error;
     }
  }
 
  async deleteall(req,res){
-      try{
-          const res=await CardService.deleteall();
-          if(!res){
-            return res.status(404).json({ error: 'No Card found' });
-          }
-          res.status(200).json(res);
-      }
-      catch(error){
-        res.status(500).json({ error: 'Internal server error' });
-      }
- }
- async createSubtask(req,res){
-     try{
-        //   console.log(req.params.id);
-           const subtask={
-               title:req.body.title,
-                id:req.params.id
-           }
-          const res=await CardService.createSubtask(subtask);
-          if(!res){
-            return res.status(404).json({ error: 'No Card found' });
-          }
-          res.status(201).json(res);
+    try{
+        const res=Card.deleteMany();
+        return res;
      }
      catch(error){
-        res.status(500).json({ error: 'Internal server error' });
-
+        throw error;
      }
+ }
+
+ async createSubtask(req,res){
+    try{
+        const subtask={
+            title:req.body.title,
+             id:req.params.id
+        }
+        const {id,title}=subtask;
+         // console.log(subtaskdata);
+        const task= await Card.findOne(id);
+         // console.log(task.subtask);
+          const ans=json.stringify(subtask.title)
+          try{
+             task.subtask.push(ans);
+             console.log(`subtask is created`);
+          }
+          catch(err){
+              console.error(err.message);
+          }
+       
+        console.log(`subtask is created`);
+        return task;
+   }
+   catch(error){
+     throw error;
+  }
+ }
+  async deleteCardbyId(req,res){
+    try{
+        const res= await Card.findByIdAndDelete(id);
+        return res;
+   }
+   catch(err){
+        console.error(err.message)
+   }
  }
 }
 

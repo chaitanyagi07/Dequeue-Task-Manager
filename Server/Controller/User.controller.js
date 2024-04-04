@@ -1,41 +1,64 @@
-const UserService=require('../Service/User.Service');
-
+const User=require('../Module/User.module')
+const jwt = require('jsonwebtoken');
 
 class UserController{
       async createUser(req,res){
         try {
-            const newUser = await UserService.createUser(req.body);
-            res.status(201).json(newUser);
-        } catch (error) {
-            res.status(500).json({ error: 'Internal server error' });
-        }
+          const {email} = req.body;
+          const existingUser = await User.findOne({email});
+          if (existingUser) {
+            return res.status(400).json({ message: 'User already exists' });
+          }        
+            const newUser = new User(req.body);
+            await newUser.save();
+            return newUser;
+        } 
+        catch (error) {
+          throw error;
       }
+    }
       async login(req,res){
-         try{
-             const result=await UserService.login(req.body);
-             res.status(201).json(result);
+            try{
+              
+              const {email,password}=req.body;
+              const user=await User.findOne({email});
+
+              if (!user) {
+              return { message: 'User not found' };
+          }
+
+          const isValidPassword = await user.isValidPassword(password);
+
+          if (!isValidPassword) {
+              return { message: 'Invalid email or password!' };
+          }
+              const token = jwt.sign({ userId: User._id }, 'secret', { expiresIn: '1h' });
+              return token;
         }
-         catch(error){
-            res.status(500).json({ error: 'Internal server error' });
-         }
-      }
-      async getall(req,res){
+        catch(error){
+              console.error(error);
+            return ({ message: 'Internal server error' });
+        }
+   }
+     async getall(req,res){
           try{
-             const result=await UserService.getall();
-             res.status(201).json(result);
-          }
-          catch(error){
-            res.status(500).json({ error: 'Internal server error' });
-          }
+            const result=await User.find();
+            console.log(result);
+            return result;
+        }
+        catch(error){
+          console.error(error);
+          return ({ message: 'Internal server error' });
+        }
       }
     async deleteall(req,res){
         try{
-            const result=await UserService.deleteall();
-            res.status(201).json(result);
-         }
-         catch(error){
-           res.status(500).json({ error: 'Internal server error' });
-         }
+          const res=await User.deleteMany();
+          return res;
+      }
+      catch(error){
+          throw error;
+      }
     }
 }
 module.exports=new UserController();
