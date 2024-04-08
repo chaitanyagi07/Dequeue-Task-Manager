@@ -4,8 +4,13 @@ const ProjectController = require('../Controller/ManageProject.controller');
 
 // Define routes
 
-router.post('/create',ProjectController.createProject);
-router.get('/getall',ProjectController.getall);
+router.get('/:id', ProjectController.getProjectById);
+router.get('/name/:name', ProjectController.projectbyname); 
+router.post('/create', ProjectController.createProject);
+router.patch('/:id', ProjectController.updateProjectById);
+router.delete('/delete', ProjectController.deleteall);
+router.delete('/:id', ProjectController.deleteProjectById);
+router.get('/', ProjectController.getall); 
 
 
 module.exports = router;

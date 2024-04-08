@@ -32,11 +32,11 @@ export const Home=()=>{
             </div>
         </div>
         <div class="cards">
-            <div class="card1 card">
+            <div class="card1 card" onClick={()=>navigate('/Event')}>
                 <h1>Event's <span Style="color: rgb(240, 240, 9);">Creator</span></h1>
                 <p>Organize all your calendar events at one place.</p>
             </div>
-            <div class="card2 card"  onClick={()=>navigate('/ManageProjects')}>
+            <div class="card2 card"  onClick={()=>navigate('/Projects')}>
                 <h1><span Style="color: rgb(240, 240, 9);">Manage</span> Projects</h1>
                 <p>Manage Complex projects without the chaos.</p>
             </div>
@@ -48,6 +48,7 @@ export const Home=()=>{
                 <h1>Tasks & <span Style="color: rgb(240, 240, 9);">Lists</span></h1>
                 <p>Easily manage your tasks and list using cards.</p>
             </div>
+            
         </div>
     </div>
         </>

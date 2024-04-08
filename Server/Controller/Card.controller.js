@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const Card = require('../Module/Card.module');
 
 class CardController {
@@ -5,7 +6,8 @@ class CardController {
         try {
             const newCard = new Card(req.body);
             await newCard.save();
-            return newCard;
+            console.log(newCard);
+            return  res.status(200).json(newCard);
         } catch (error) {
             throw error;
         }
@@ -18,7 +20,7 @@ class CardController {
             if (!card) {
                 return res.status(404).json({ error: 'Card not found' });
             }
-            return card;
+            return  res.status(200).json(card);
         } catch (error) {
             res.status(500).json({ error: 'Internal server error' });
         }
@@ -26,7 +28,9 @@ class CardController {
  async getall(req,res){
     try {
         const result=Card.find();
-        return result;
+        // console.log(result.body);
+       JSON.stringify(result.body)
+        return res.status(200).json(result.body);
     } catch (error) {
         throw error;
     }
@@ -34,11 +38,11 @@ class CardController {
 
  async deleteall(req,res){
     try{
-        const res=Card.deleteMany();
-        return res;
+        const result=await Card.deleteMany();
+        return res.status(200).json({ message: 'Deleted successfully', result});
      }
      catch(error){
-        throw error;
+        return res.status(500).json({ message: 'Internal server error' });
      }
  }
 
